@@ -1,44 +1,55 @@
-from flask import Flask, request, render_template
+import streamlit as st
 import numpy as np
 import joblib
-import pickle
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import StandardScaler
-#pipe= pickle.load(open('/Users/shatha/Prog yogesh/our finalised model.pickle','rb'))
-app = Flask(__name__, static_folder='static')
 
 # Load the trained Random Forest model and scaler
 rf_model = joblib.load('rf_model.joblib')
 scaler = joblib.load('scaler.joblib')
 
-@app.route('/', methods=['GET', 'POST'])
-def home():
-    prediction = None
-    if request.method == 'POST':
-        # Get input features fropm the form
-        features = [
-            float(request.form['Purchases']),
-            float(request.form['bTotal']),
-            float(request.form['bSolar']),
-            float(request.form['bNonSolar']),
-            float(request.form['bHydro']),
-            float(request.form['mcvTotal']),
-            float(request.form['mcvSolar']),
-            float(request.form['mcvNonsolar']),
-            float(request.form['mcvHydro']),
-            float(request.form['fsvTotal']),
-            float(request.form['fsvSolar']),
-            float(request.form['fsvNonSolar']),
-            float(request.form['fsvHydro'])
-        ]
+# Set up the Streamlit app
+st.title("Energy Prediction App")
 
-        # Scale the input features
-        features_scaled = scaler.transform([features])
+# Create input fields for the features
+purchases = st.number_input('Purchases', value=0.0)
+sb_total = st.number_input('SB Total', value=0.0)
+sb_solar = st.number_input('SB Solar', value=0.0)
+sb_non_solar = st.number_input('SB Non-Solar', value=0.0)
+sb_hydro = st.number_input('SB Hydro', value=0.0)
+mcv_total = st.number_input('MCV Total', value=0.0)
+mcv_solar = st.number_input('MCV Solar', value=0.0)
+mcv_non_solar = st.number_input('MCV Non-Solar', value=0.0)
+mcv_hydro = st.number_input('MCV Hydro', value=0.0)
+fsv_total = st.number_input('FSV Total', value=0.0)
+fsv_solar = st.number_input('FSV Solar', value=0.0)
+fsv_non_solar = st.number_input('FSV Non-Solar', value=0.0)
+fsv_hydro = st.number_input('FSV Hydro', value=0.0)
 
-        # Make prediction
-        prediction = rf_model.predict(features_scaled)[0]
+# Button to make a prediction
+if st.button('Predict'):
+    # Collect input features into a list
+    features = [
+        purchases,
+        sb_total,
+        sb_solar,
+        sb_non_solar,
+        sb_hydro,
+        mcv_total,
+        mcv_solar,
+        mcv_non_solar,
+        mcv_hydro,
+        fsv_total,
+        fsv_solar,
+        fsv_non_solar,
+        fsv_hydro
+    ]
 
-    return render_template('index.html', prediction=prediction)
+    # Scale the input features
+    features_scaled = scaler.transform([features])
 
-if __name__ == '__main__':
-    app.run(debug=True)
+    # Make prediction
+    prediction = rf_model.predict(features_scaled)[0]
+
+    # Display the prediction
+    st.success(f'The predicted energy output is: {prediction}')
