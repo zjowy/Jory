@@ -4,7 +4,6 @@ import numpy as np
 import joblib
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import StandardScaler
-import joblib
 # Load the trained Random Forest model and scaler
 rf_model = joblib.load('rf_model.joblib')
 scaler = joblib.load('scaler.joblib')
