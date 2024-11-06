@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 
-st.title("This is Jory !!")
+st.title("This is Mr. Yogesh P Murumkar!!!")
 st.write("And this one just a sample Application!!")
 
 df= pd.DataFrame({
